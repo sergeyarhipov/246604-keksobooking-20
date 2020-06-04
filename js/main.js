@@ -68,8 +68,8 @@ var getMockBase = function () {
     var offerQuantityRooms = getRandomNumber(MAX_ROOMS);
     var offerQuantityGuests = getRandomNumber(MAX_GUESTS);
     var offerCheckinIndex = getRandomNumber(OFFER_CHECKIN.length - 1);
-    var locationX = getRandomNumber(MAX_X); // Функция подбора рандомных значений
-    var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y); // Функция подбора рандомных значений
+    var locationX = getRandomNumber(MAX_X);
+    var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y);
 
     var mockObject = {
       'author': {
@@ -98,6 +98,7 @@ var getMockBase = function () {
   return mockArray;
 };
 
+// Функции рендеринга элементов
 var renderMapLabel = function (pin) {
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var pinLabel = pinTemplate.cloneNode(true);
