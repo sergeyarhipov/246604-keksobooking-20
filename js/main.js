@@ -108,7 +108,7 @@ var renderMapLabel = function (pin) {
   pinLabel.style.left = coordinateX + 'px';
   pinLabel.style.top = coordinateY + 'px';
   pinAvatar.src = pin.author.avatar;
-  pinAvatar.alt = pin.offerTitle;
+  pinAvatar.alt = pin.offer.title;
 
   return pinLabel;
 };
