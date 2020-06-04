@@ -116,4 +116,3 @@ var renderMapPins = function () {
 
 renderMapPins();
 
-console.log(getMockBase());
