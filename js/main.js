@@ -30,7 +30,7 @@ var getMockBase = function () {
   // Функция для генерации фотографий для объекта
   var getQuantityPhotos = function () {
     var arrayPhotos = []; // Массив фотографий
-    for (var i = 0; i < getRandomNumber(MAX_PHOTOS) - 1; i++) {
+    for (var i = 0; i < getRandomNumber(MAX_PHOTOS); i++) {
       arrayPhotos[i] = 'http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg';
     }
     return arrayPhotos;
@@ -42,14 +42,21 @@ var getMockBase = function () {
     var choiceOptions = []; // Массив порядковых номеров отобранных опций
     for (var i = 0; i < quantityOptions; i++) {
       var RandomOption = getRandomNumber(OFFER_FEATURES.length); // Подбор порядкового номера опции из массива опций
-      while (choiceOptions.indexOf(RandomOption) !== -1) {
-        RandomOption = getRandomNumber(OFFER_FEATURES.length);
+      if (choiceOptions.indexOf(RandomOption) !== -1) {
+        continue;
       }
       choiceOptions.push(RandomOption);
     }
+
     var selectOptions = []; // Массив отобранных опций
     for (var j = 0; j < choiceOptions.length; j++) {
       selectOptions.push(OFFER_FEATURES[choiceOptions[j]]);
+    }
+
+    for (var k = 0; k < selectOptions.length; k++) {
+      if (typeof selectOptions[k] === 'undefined') {
+        selectOptions.splice(k, 1);
+      }
     }
 
     return selectOptions;
@@ -57,10 +64,10 @@ var getMockBase = function () {
 
   for (var i = 0; i < 8; i++) {
     var offerPrice = getRandomNumber(MAX_PRICE);
-    var offerType = getRandomNumber(OFFER_TYPE.length);
+    var offerType = getRandomNumber(OFFER_TYPE.length - 1);
     var offerQuantityRooms = getRandomNumber(MAX_ROOMS);
     var offerQuantityGuests = getRandomNumber(MAX_GUESTS);
-    var offerCheckinIndex = getRandomNumber(OFFER_CHECKIN.length);
+    var offerCheckinIndex = getRandomNumber(OFFER_CHECKIN.length - 1);
     var locationX = getRandomNumber(MAX_X); // Функция подбора рандомных значений
     var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y); // Функция подбора рандомных значений
 
@@ -115,4 +122,3 @@ var renderMapPins = function () {
 };
 
 renderMapPins();
-
