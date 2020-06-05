@@ -11,6 +11,8 @@ var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var MAX_X = 1200;
 var MIN_Y = 130;
 var MAX_Y = 630;
+var OFFSET_X = 35;
+var OFFSET_Y = 50;
 
 map.classList.remove('map--faded');
 
@@ -90,8 +92,8 @@ var renderMapPin = function (pin) {
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var pinNode = pinTemplate.cloneNode(true);
   var pinAvatar = pinNode.querySelector('img');
-  var coordinateX = pin.location.x - 31;
-  var coordinateY = pin.location.y - 62;
+  var coordinateX = pin.location.x - OFFSET_X;
+  var coordinateY = pin.location.y - OFFSET_Y;
   pinNode.style.left = coordinateX + 'px';
   pinNode.style.top = coordinateY + 'px';
   pinAvatar.src = pin.author.avatar;
