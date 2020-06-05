@@ -36,11 +36,11 @@ var getPhotos = function () {
 
 // Функция подбора дополнительных опций
 var getFeatures = function () {
-  var numberOptions = getRandomNumber(OFFER_FEATURES.length - 1); // Определение количества удаляемых опций
+  var numberOptions = getRandomNumber(OFFER_FEATURES.length - 1); // Определение количества опций
   var cloneOfferFeatures = OFFER_FEATURES.slice();
   var choiceOptions = [];
   for (var i = 0; i < numberOptions; i++) {
-    var randomOption = getRandomNumber(cloneOfferFeatures.length - 1); // Подбор порядкового номера опции из массива опций
+    var randomOption = getRandomNumber(cloneOfferFeatures.length - 1); // Подбор порядкового номера опции из массива
     choiceOptions.push(cloneOfferFeatures[randomOption]);
     cloneOfferFeatures.splice(randomOption, 1);
   }
