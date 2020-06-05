@@ -1,6 +1,16 @@
 'use strict';
 var map = document.querySelector('.map');
 var mapPins = document.querySelector('.map__pins');
+var MAX_PRICE = 10000;
+var MAX_ROOMS = 5;
+var MAX_GUESTS = 4;
+var MAX_PHOTOS = 8;
+var OFFER_TIME = ['12:00', '13:00', '14:00'];
+var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']; // Массив опций
+var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var MAX_X = 1200;
+var MIN_Y = 130;
+var MAX_Y = 630;
 
 map.classList.remove('map--faded');
 
@@ -13,61 +23,38 @@ var getRandomNumberFromRange = function (numberMin, numberMax) {
   return Math.floor(Math.random() * (numberMax - numberMin + 1) + numberMin);
 };
 
+// Функция для генерации фотографий для объекта
+var getPhotos = function () {
+  var photos = []; // Массив фотографий
+  for (var i = 0; i < getRandomNumber(MAX_PHOTOS); i++) {
+    photos[i] = 'http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg';
+  }
+  return photos;
+};
+
+// Функция подбора дополнительных опций
+var getFeatures = function () {
+  var numberOptions = getRandomNumber(OFFER_FEATURES.length - 1); // Определение количества удаляемых опций
+  var cloneOfferFeatures = OFFER_FEATURES.slice();
+  var choiceOptions = [];
+  for (var i = 0; i < numberOptions; i++) {
+    var randomOption = getRandomNumber(cloneOfferFeatures.length - 1); // Подбор порядкового номера опции из массива опций
+    choiceOptions.push(cloneOfferFeatures[randomOption]);
+    cloneOfferFeatures.splice(randomOption, 1);
+  }
+  return choiceOptions;
+};
+
 // Функция создания массива из 8 сгенерированных JS-объектов
-var getMockBase = function () {
-  var MAX_PRICE = 10000;
-  var MAX_ROOMS = 5;
-  var MAX_GUESTS = 4;
-  var MAX_PHOTOS = 8;
-  var OFFER_CHECKIN = ['12:00', '13:00', '14:00'];
-  var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']; // Массив опций
-  var OFFER_TYPE = ['palace', 'flat', 'house', 'bungalo'];
-  var MAX_X = 1200;
-  var MIN_Y = 130;
-  var MAX_Y = 630;
+var getMocks = function () {
 
   var mockArray = [];
-  // Функция для генерации фотографий для объекта
-  var getQuantityPhotos = function () {
-    var arrayPhotos = []; // Массив фотографий
-    for (var i = 0; i < getRandomNumber(MAX_PHOTOS); i++) {
-      arrayPhotos[i] = 'http://o0.github.io/assets/images/tokyo/hotel' + (i + 1) + '.jpg';
-    }
-    return arrayPhotos;
-  };
-
-  // Функция подбора дополнительных опций
-  var getFeaturesOption = function () {
-    var quantityOptions = getRandomNumber(OFFER_FEATURES.length); // Определение количества опций
-    var choiceOptions = []; // Массив порядковых номеров отобранных опций
-    for (var i = 0; i < quantityOptions; i++) {
-      var RandomOption = getRandomNumber(OFFER_FEATURES.length); // Подбор порядкового номера опции из массива опций
-      if (choiceOptions.indexOf(RandomOption) !== -1) {
-        continue;
-      }
-      choiceOptions.push(RandomOption);
-    }
-
-    var selectOptions = []; // Массив отобранных опций
-    for (var j = 0; j < choiceOptions.length; j++) {
-      selectOptions.push(OFFER_FEATURES[choiceOptions[j]]);
-    }
-
-    for (var k = 0; k < selectOptions.length; k++) {
-      if (typeof selectOptions[k] === 'undefined') {
-        selectOptions.splice(k, 1);
-      }
-    }
-
-    return selectOptions;
-  };
-
   for (var i = 0; i < 8; i++) {
     var offerPrice = getRandomNumber(MAX_PRICE);
-    var offerType = getRandomNumber(OFFER_TYPE.length - 1);
+    var offerType = getRandomNumber(OFFER_TYPES.length - 1);
     var offerQuantityRooms = getRandomNumber(MAX_ROOMS);
     var offerQuantityGuests = getRandomNumber(MAX_GUESTS);
-    var offerCheckinIndex = getRandomNumber(OFFER_CHECKIN.length - 1);
+    var offerCheckinIndex = getRandomNumber(OFFER_TIME.length - 1);
     var locationX = getRandomNumber(MAX_X);
     var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y);
 
@@ -79,14 +66,14 @@ var getMockBase = function () {
         'title': 'Заголовок предложения',
         'address': locationX + ',' + locationY,
         'price': offerPrice,
-        'type': OFFER_TYPE[offerType],
+        'type': OFFER_TYPES[offerType],
         'rooms': offerQuantityRooms,
         'guests': offerQuantityGuests,
-        'checkin': OFFER_CHECKIN[offerCheckinIndex],
-        'checkout': OFFER_CHECKIN[offerCheckinIndex],
-        'features': getFeaturesOption(),
+        'checkin': OFFER_TIME[offerCheckinIndex],
+        'checkout': OFFER_TIME[offerCheckinIndex],
+        'features': getFeatures(),
         'description': 'Текст описания',
-        'photos': getQuantityPhotos()
+        'photos': getPhotos()
       },
       'location': {
         'x': locationX,
@@ -99,25 +86,25 @@ var getMockBase = function () {
 };
 
 // Функции рендеринга элементов
-var renderMapLabel = function (pin) {
+var renderMapPin = function (pin) {
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  var pinLabel = pinTemplate.cloneNode(true);
-  var pinAvatar = pinLabel.querySelector('img');
-  var coordinateX = pin.location.x - 62;
+  var pinNode = pinTemplate.cloneNode(true);
+  var pinAvatar = pinNode.querySelector('img');
+  var coordinateX = pin.location.x - 31;
   var coordinateY = pin.location.y - 62;
-  pinLabel.style.left = coordinateX + 'px';
-  pinLabel.style.top = coordinateY + 'px';
+  pinNode.style.left = coordinateX + 'px';
+  pinNode.style.top = coordinateY + 'px';
   pinAvatar.src = pin.author.avatar;
   pinAvatar.alt = pin.offer.title;
 
-  return pinLabel;
+  return pinNode;
 };
 
 var renderMapPins = function () {
   var fragment = document.createDocumentFragment();
-  var mapPinsArray = getMockBase();
+  var mapPinsArray = getMocks();
   for (var i = 0; i < mapPinsArray.length; i++) {
-    fragment.appendChild(renderMapLabel(mapPinsArray[i]));
+    fragment.appendChild(renderMapPin(mapPinsArray[i]));
   }
   mapPins.appendChild(fragment);
 };
