@@ -5,16 +5,14 @@ var MAX_PRICE = 10000;
 var MAX_ROOMS = 5;
 var MAX_GUESTS = 4;
 var MAX_PHOTOS = 8;
-var OFFER_TIME = ['12:00', '13:00', '14:00'];
+var OFFER_TIMES = ['12:00', '13:00', '14:00'];
 var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']; // Массив опций
 var OFFER_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var MAX_X = 1200;
 var MIN_Y = 130;
 var MAX_Y = 630;
-var OFFSET_X = 35;
-var OFFSET_Y = 50;
-
-map.classList.remove('map--faded');
+var OFFSET_X = 25;
+var OFFSET_Y = 70;
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
@@ -56,7 +54,7 @@ var getMocks = function () {
     var offerType = getRandomNumber(OFFER_TYPES.length - 1);
     var offerQuantityRooms = getRandomNumber(MAX_ROOMS);
     var offerQuantityGuests = getRandomNumber(MAX_GUESTS);
-    var offerCheckinIndex = getRandomNumber(OFFER_TIME.length - 1);
+    var offerCheckinIndex = getRandomNumber(OFFER_TIMES.length - 1);
     var locationX = getRandomNumber(MAX_X);
     var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y);
 
@@ -71,8 +69,8 @@ var getMocks = function () {
         'type': OFFER_TYPES[offerType],
         'rooms': offerQuantityRooms,
         'guests': offerQuantityGuests,
-        'checkin': OFFER_TIME[offerCheckinIndex],
-        'checkout': OFFER_TIME[offerCheckinIndex],
+        'checkin': OFFER_TIMES[offerCheckinIndex],
+        'checkout': OFFER_TIMES[offerCheckinIndex],
         'features': getFeatures(),
         'description': 'Текст описания',
         'photos': getPhotos()
@@ -110,5 +108,7 @@ var renderMapPins = function () {
   }
   mapPins.appendChild(fragment);
 };
+
+map.classList.remove('map--faded');
 
 renderMapPins();
