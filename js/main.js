@@ -56,6 +56,7 @@ var getMocks = function () {
     var offerQuantityRooms = getRandomNumberFromRange(MIN_ROOMS_GUESTS, MAX_ROOMS);
     var offerQuantityGuests = getRandomNumberFromRange(MIN_ROOMS_GUESTS, MAX_GUESTS);
     var offerCheckinIndex = getRandomNumber(OFFER_TIMES.length - 1);
+    var offerCheckoutIndex = getRandomNumber(OFFER_TIMES.length - 1);
     var locationX = getRandomNumber(MAX_X);
     var locationY = getRandomNumberFromRange(MIN_Y, MAX_Y);
 
@@ -71,7 +72,7 @@ var getMocks = function () {
         'rooms': offerQuantityRooms,
         'guests': offerQuantityGuests,
         'checkin': OFFER_TIMES[offerCheckinIndex],
-        'checkout': OFFER_TIMES[offerCheckinIndex],
+        'checkout': OFFER_TIMES[offerCheckoutIndex],
         'features': getFeatures(),
         'description': 'Текст описания',
         'photos': getPhotos()
@@ -190,7 +191,7 @@ var renderCards = function (card) {
   };
 
   popupTitle.textContent = card.offer.title;
-  popupTextAdress.textContent = card.offer.adress;
+  popupTextAdress.textContent = card.offer.address;
   popupOfferPrice.textContent = card.offer.price + '₽/ночь';
   popupOfferType.textContent = defineTypeHouse(card.offer.type);
   popupTextCapacity.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
@@ -207,7 +208,7 @@ var renderCard = function () {
   var cardsArray = getMocks();
 
   fragment.appendChild(renderCards(cardsArray[1]));
-  map.appendChild(fragment);
+  mapPins.after(fragment);
 };
 
 map.classList.remove('map--faded');
