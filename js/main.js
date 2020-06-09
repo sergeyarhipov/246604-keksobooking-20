@@ -102,13 +102,67 @@ var renderMapPin = function (pin) {
   return pinNode;
 };
 
-var renderMapPins = function () {
+var offers = getMocks();
+
+var renderMapPins = function (arrayMocks) {
   var fragment = document.createDocumentFragment();
-  var mapPinsArray = getMocks();
+  var mapPinsArray = arrayMocks;
   for (var i = 0; i < mapPinsArray.length; i++) {
     fragment.appendChild(renderMapPin(mapPinsArray[i]));
   }
   mapPins.appendChild(fragment);
+};
+
+// Функция выбора варианта для отображения типа жилья
+var defineTypeHouse = function (homeType) {
+  switch (homeType) {
+    case 'flat':
+      return 'Квартира';
+    case 'bungalo':
+      return 'Бунгало';
+    case 'house':
+      return 'Дом';
+    default:
+      return 'Дворец';
+  }
+};
+
+// Функция отображения фотографий предложения
+var renderPhotos = function (arrayMockPhotos) {
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var cardNode = cardTemplate.cloneNode(true);
+  var popupPhotos = cardNode.querySelector('.popup__photos');
+  var popupPhoto = cardNode.querySelector('.popup__photo');
+  var popupMock = arrayMockPhotos;
+  console.log(popupMock[0].offer.photos);
+  if (popupMock[0].offer.photos.length === 0) {
+    popupPhotos.classList.add('hidden');
+  }
+
+  popupPhotos.innerHTML = '';
+  for (var j = 0; j < popupMock[0].offer.photos.length; j++) {
+    var popupImg = popupPhoto.cloneNode(true);
+    popupImg.src = popupMock[0].offer.photos[j];
+    popupPhotos.appendChild(popupImg);
+  }
+  console.log(popupPhotos);
+};
+
+// Функция для отображения/скрытия опций
+var renderFeatures = function (arrayMockFeatures) {
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var cardNode = cardTemplate.cloneNode(true);
+  var popupFeatures = cardNode.querySelector('.popup__features');
+  var featuresArray = popupFeatures.children;
+  // Добавление скрытия (добавление класса) по умолчанию всех опций
+  for (var i = 0; i < featuresArray.length; i++) {
+    featuresArray[i].classList.add('hidden');
+  }
+
+  for (var j = 0; j < arrayMockFeatures[0].offer.features.length; j++) {
+    var popupFeature = popupFeatures.querySelector('.popup__feature--' + arrayMockFeatures[0].offer.features[j]);
+    popupFeature.classList.remove('hidden');
+  }
 };
 
 var renderCards = function (card) {
@@ -120,75 +174,9 @@ var renderCards = function (card) {
   var popupOfferType = cardNode.querySelector('.popup__type');
   var popupTextCapacity = cardNode.querySelector('.popup__text--capacity');
   var popupTextTime = cardNode.querySelector('.popup__text--time');
-  var popupFeatures = cardNode.querySelector('.popup__features');
-  var featuresArray = popupFeatures.children;
-  var wifiFeature = popupFeatures.querySelector('.popup__feature--wifi');
-  var dishwasherFeature = popupFeatures.querySelector('.popup__feature--dishwasher');
-  var parkingFeature = popupFeatures.querySelector('.popup__feature--parking');
-  var washerFeature = popupFeatures.querySelector('.popup__feature--washer');
-  var elevatorFeature = popupFeatures.querySelector('.popup__feature--elevator');
-  var conditionerFeature = popupFeatures.querySelector('.popup__feature--conditioner');
-  var popupMock = getMocks();
+
   var popupDescription = cardNode.querySelector('.popup__description');
-  var popupPhotos = cardNode.querySelector('.popup__photos');
-  var popupPhoto = cardNode.querySelector('.popup__photo');
   var popupAvatar = cardNode.querySelector('.popup__avatar');
-
-  // Функция выбора варианта для отображения типа жилья
-  var defineTypeHouse = function (homeType) {
-    if (homeType === 'flat') {
-      return 'Квартира';
-    } else if (homeType === 'bungalo') {
-      return 'Бунгало';
-    } else if (homeType === 'house') {
-      return 'Дом';
-    } else {
-      return 'Дворец';
-    }
-  };
-
-  // Функция для отображения/скрытия опций
-  var renderFeatures = function () {
-    // Добавление скрытия (добавление класса) по умолчанию всех опций
-    for (var i = 0; i < featuresArray.length; i++) {
-      featuresArray[i].classList.add('hidden');
-    }
-    // Проверка наличия опции в mok
-    for (var j = 0; j < 1; j++) {
-      if (popupMock[j].offer.features.indexOf('wifi') !== -1) {
-        wifiFeature.classList.remove('hidden');
-      }
-      if (popupMock[j].offer.features.indexOf('dishwasher') !== -1) {
-        dishwasherFeature.classList.remove('hidden');
-      }
-      if (popupMock[j].offer.features.indexOf('parking') !== -1) {
-        parkingFeature.classList.remove('hidden');
-      }
-      if (popupMock[j].offer.features.indexOf('washer') !== -1) {
-        washerFeature.classList.remove('hidden');
-      }
-      if (popupMock[j].offer.features.indexOf('elevator') !== -1) {
-        elevatorFeature.classList.remove('hidden');
-      }
-      if (popupMock[j].offer.features.indexOf('conditioner') !== -1) {
-        conditionerFeature.classList.remove('hidden');
-      }
-    }
-  };
-
-  // Функция отображения фотографий предложения
-  var renderPhotos = function () {
-    if (popupMock[0].offer.photos.length === 0) {
-      popupPhotos.classList.add('hidden');
-    }
-
-    popupPhotos.innerHTML = '';
-    for (var j = 0; j < popupMock[0].offer.photos.length; j++) {
-      var popupImg = popupPhoto.cloneNode(true);
-      popupImg.src = popupMock[0].offer.photos[j];
-      popupPhotos.appendChild(popupImg);
-    }
-  };
 
   popupTitle.textContent = card.offer.title;
   popupTextAdress.textContent = card.offer.address;
@@ -198,20 +186,20 @@ var renderCards = function (card) {
   popupTextTime.textContent = 'Заезд после ' + card.offer.checkin + ',' + ' выезд до ' + card.offer.checkout;
   popupDescription.textContent = card.offer.description;
   popupAvatar.src = card.author.avatar;
-  renderFeatures();
-  renderPhotos();
+  renderFeatures(offers);
+  renderPhotos(offers);
   return cardNode;
 };
 
 var renderCard = function () {
   var fragment = document.createDocumentFragment();
-  var cardsArray = getMocks();
+  var cardsArray = offers;
 
-  fragment.appendChild(renderCards(cardsArray[1]));
+  fragment.appendChild(renderCards(cardsArray[0]));
   mapPins.after(fragment);
 };
 
 map.classList.remove('map--faded');
 
-renderMapPins();
+renderMapPins(offers);
 renderCard();
