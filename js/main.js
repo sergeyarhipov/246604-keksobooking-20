@@ -102,8 +102,6 @@ var renderMapPin = function (pin) {
   return pinNode;
 };
 
-var offers = getMocks();
-
 var renderMapPins = function (arrayMocks) {
   var fragment = document.createDocumentFragment();
   var mapPinsArray = arrayMocks;
@@ -123,29 +121,29 @@ var defineTypeHouse = function (homeType) {
     case 'house':
       return 'Дом';
     default:
+    case 'palace':
       return 'Дворец';
   }
 };
 
 // Функция отображения фотографий предложения
-var renderPhotos = function (arrayMockPhotos, node) {
+var renderPhotos = function (mockPhotos, node) {
   var popupPhotos = node.querySelector('.popup__photos');
   var popupPhoto = node.querySelector('.popup__photo');
-  var popupMock = arrayMockPhotos;
-  if (popupMock[0].offer.photos.length === 0) {
+  if (mockPhotos.offer.photos.length === 0) {
     popupPhotos.classList.add('hidden');
   }
 
   popupPhotos.innerHTML = '';
-  for (var j = 0; j < popupMock[0].offer.photos.length; j++) {
+  for (var j = 0; j < mockPhotos.offer.photos.length; j++) {
     var popupImg = popupPhoto.cloneNode(true);
-    popupImg.src = popupMock[0].offer.photos[j];
+    popupImg.src = mockPhotos.offer.photos[j];
     popupPhotos.appendChild(popupImg);
   }
 };
 
 // Функция для отображения/скрытия опций
-var renderFeatures = function (arrayMockFeatures, node) {
+var renderFeatures = function (mockFeatures, node) {
   var popupFeatures = node.querySelector('.popup__features');
   var featuresArray = popupFeatures.children;
   // Добавление скрытия (добавление класса) по умолчанию всех опций
@@ -153,48 +151,48 @@ var renderFeatures = function (arrayMockFeatures, node) {
     featuresArray[i].classList.add('hidden');
   }
 
-  for (var j = 0; j < arrayMockFeatures[0].offer.features.length; j++) {
-    var popupFeature = popupFeatures.querySelector('.popup__feature--' + arrayMockFeatures[0].offer.features[j]);
+  for (var j = 0; j < mockFeatures.offer.features.length; j++) {
+    var popupFeature = popupFeatures.querySelector('.popup__feature--' + mockFeatures.offer.features[j]);
     popupFeature.classList.remove('hidden');
   }
 };
 
 // Функции отрисовки карточки
-var renderCards = function (card) {
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var cardNode = cardTemplate.cloneNode(true);
-  var popupTitle = cardNode.querySelector('.popup__title');
-  var popupTextAdress = cardNode.querySelector('.popup__text--address');
-  var popupOfferPrice = cardNode.querySelector('.popup__text--price');
-  var popupOfferType = cardNode.querySelector('.popup__type');
-  var popupTextCapacity = cardNode.querySelector('.popup__text--capacity');
-  var popupTextTime = cardNode.querySelector('.popup__text--time');
+var renderOffer = function (ad) {
+  var adTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  var adNode = adTemplate.cloneNode(true);
+  var popupTitle = adNode.querySelector('.popup__title');
+  var popupTextAdress = adNode.querySelector('.popup__text--address');
+  var popupOfferPrice = adNode.querySelector('.popup__text--price');
+  var popupOfferType = adNode.querySelector('.popup__type');
+  var popupTextCapacity = adNode.querySelector('.popup__text--capacity');
+  var popupTextTime = adNode.querySelector('.popup__text--time');
 
-  var popupDescription = cardNode.querySelector('.popup__description');
-  var popupAvatar = cardNode.querySelector('.popup__avatar');
+  var popupDescription = adNode.querySelector('.popup__description');
+  var popupAvatar = adNode.querySelector('.popup__avatar');
 
-  popupTitle.textContent = card.offer.title;
-  popupTextAdress.textContent = card.offer.address;
-  popupOfferPrice.textContent = card.offer.price + '₽/ночь';
-  popupOfferType.textContent = defineTypeHouse(card.offer.type);
-  popupTextCapacity.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
-  popupTextTime.textContent = 'Заезд после ' + card.offer.checkin + ',' + ' выезд до ' + card.offer.checkout;
-  popupDescription.textContent = card.offer.description;
-  popupAvatar.src = card.author.avatar;
-  renderFeatures(offers, cardNode);
-  renderPhotos(offers, cardNode);
-  return cardNode;
+  popupTitle.textContent = ad.offer.title;
+  popupTextAdress.textContent = ad.offer.address;
+  popupOfferPrice.textContent = ad.offer.price + '₽/ночь';
+  popupOfferType.textContent = defineTypeHouse(ad.offer.type);
+  popupTextCapacity.textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+  popupTextTime.textContent = 'Заезд после ' + ad.offer.checkin + ',' + ' выезд до ' + ad.offer.checkout;
+  popupDescription.textContent = ad.offer.description;
+  popupAvatar.src = ad.author.avatar;
+  renderFeatures(offers[0], adNode);
+  renderPhotos(offers[0], adNode);
+  return adNode;
 };
 
-var renderCard = function () {
+var renderOffers = function (ad) {
   var fragment = document.createDocumentFragment();
-  var cardsArray = offers;
 
-  fragment.appendChild(renderCards(cardsArray[0]));
+  fragment.appendChild(renderOffer(ad));
   mapPins.after(fragment);
 };
 
+var offers = getMocks();
 map.classList.remove('map--faded');
 
 renderMapPins(offers);
-renderCard();
+renderOffers(offers[0]);
