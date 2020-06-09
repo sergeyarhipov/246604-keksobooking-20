@@ -128,13 +128,10 @@ var defineTypeHouse = function (homeType) {
 };
 
 // Функция отображения фотографий предложения
-var renderPhotos = function (arrayMockPhotos) {
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var cardNode = cardTemplate.cloneNode(true);
-  var popupPhotos = cardNode.querySelector('.popup__photos');
-  var popupPhoto = cardNode.querySelector('.popup__photo');
+var renderPhotos = function (arrayMockPhotos, node) {
+  var popupPhotos = node.querySelector('.popup__photos');
+  var popupPhoto = node.querySelector('.popup__photo');
   var popupMock = arrayMockPhotos;
-  console.log(popupMock[0].offer.photos);
   if (popupMock[0].offer.photos.length === 0) {
     popupPhotos.classList.add('hidden');
   }
@@ -145,14 +142,11 @@ var renderPhotos = function (arrayMockPhotos) {
     popupImg.src = popupMock[0].offer.photos[j];
     popupPhotos.appendChild(popupImg);
   }
-  console.log(popupPhotos);
 };
 
 // Функция для отображения/скрытия опций
-var renderFeatures = function (arrayMockFeatures) {
-  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var cardNode = cardTemplate.cloneNode(true);
-  var popupFeatures = cardNode.querySelector('.popup__features');
+var renderFeatures = function (arrayMockFeatures, node) {
+  var popupFeatures = node.querySelector('.popup__features');
   var featuresArray = popupFeatures.children;
   // Добавление скрытия (добавление класса) по умолчанию всех опций
   for (var i = 0; i < featuresArray.length; i++) {
@@ -186,8 +180,8 @@ var renderCards = function (card) {
   popupTextTime.textContent = 'Заезд после ' + card.offer.checkin + ',' + ' выезд до ' + card.offer.checkout;
   popupDescription.textContent = card.offer.description;
   popupAvatar.src = card.author.avatar;
-  renderFeatures(offers);
-  renderPhotos(offers);
+  renderFeatures(offers, cardNode);
+  renderPhotos(offers, cardNode);
   return cardNode;
 };
 
