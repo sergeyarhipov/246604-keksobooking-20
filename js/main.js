@@ -159,6 +159,7 @@ var renderFeatures = function (arrayMockFeatures, node) {
   }
 };
 
+// Функции отрисовки карточки
 var renderCards = function (card) {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var cardNode = cardTemplate.cloneNode(true);
