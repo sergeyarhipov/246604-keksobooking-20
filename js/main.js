@@ -15,11 +15,16 @@ var MAX_Y = 630;
 var OFFSET_X = 25;
 var OFFSET_Y = 70;
 
-// Функция блокировки полей формы
+// Функция блокировки полей форм
 var blockFieldset = function () {
-  var fieldset = document.querySelectorAll('fieldset');
-  for (var i = 0; i < fieldset.length; i++) {
-    fieldset[i].disabled = true;
+  var fieldsets = document.querySelectorAll('fieldset');
+  var selects = document.querySelectorAll('select');
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].disabled = true;
+  }
+
+  for (var j = 0; j < selects.length; j++) {
+    selects[j].disabled = true;
   }
 };
 
