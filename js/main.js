@@ -179,8 +179,8 @@ var renderOffer = function (ad) {
   popupTextTime.textContent = 'Заезд после ' + ad.offer.checkin + ',' + ' выезд до ' + ad.offer.checkout;
   popupDescription.textContent = ad.offer.description;
   popupAvatar.src = ad.author.avatar;
-  renderFeatures(offers[0], adNode);
-  renderPhotos(offers[0], adNode);
+  renderFeatures(ad, adNode);
+  renderPhotos(ad, adNode);
   return adNode;
 };
 
