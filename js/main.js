@@ -127,23 +127,23 @@ var defineTypeHouse = function (homeType) {
 };
 
 // Функция отображения фотографий предложения
-var renderPhotos = function (mockPhotos, node) {
+var renderPhotos = function (ad, node) {
   var popupPhotos = node.querySelector('.popup__photos');
   var popupPhoto = node.querySelector('.popup__photo');
-  if (mockPhotos.offer.photos.length === 0) {
+  if (ad.offer.photos.length === 0) {
     popupPhotos.classList.add('hidden');
   }
 
   popupPhotos.innerHTML = '';
-  for (var j = 0; j < mockPhotos.offer.photos.length; j++) {
+  for (var j = 0; j < ad.offer.photos.length; j++) {
     var popupImg = popupPhoto.cloneNode(true);
-    popupImg.src = mockPhotos.offer.photos[j];
+    popupImg.src = ad.offer.photos[j];
     popupPhotos.appendChild(popupImg);
   }
 };
 
 // Функция для отображения/скрытия опций
-var renderFeatures = function (mockFeatures, node) {
+var renderFeatures = function (ad, node) {
   var popupFeatures = node.querySelector('.popup__features');
   var featuresArray = popupFeatures.children;
   // Добавление скрытия (добавление класса) по умолчанию всех опций
@@ -151,8 +151,8 @@ var renderFeatures = function (mockFeatures, node) {
     featuresArray[i].classList.add('hidden');
   }
 
-  for (var j = 0; j < mockFeatures.offer.features.length; j++) {
-    var popupFeature = popupFeatures.querySelector('.popup__feature--' + mockFeatures.offer.features[j]);
+  for (var j = 0; j < ad.offer.features.length; j++) {
+    var popupFeature = popupFeatures.querySelector('.popup__feature--' + ad.offer.features[j]);
     popupFeature.classList.remove('hidden');
   }
 };
