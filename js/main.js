@@ -14,21 +14,16 @@ var MIN_Y = 130;
 var MAX_Y = 630;
 var OFFSET_X = 25;
 var OFFSET_Y = 70;
+var MAIN_PIN_SIZE = 65;
 
-// Функция блокировки полей форм
-var blockFieldset = function () {
-  var fieldsets = document.querySelectorAll('fieldset');
-  var selects = document.querySelectorAll('select');
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].disabled = true;
-  }
-
-  for (var j = 0; j < selects.length; j++) {
-    selects[j].disabled = true;
-  }
-};
-
-blockFieldset();
+var mainPin = map.querySelector('.map__pin--main');
+var fieldsets = document.querySelectorAll('fieldset');
+var selects = document.querySelectorAll('select');
+var inputAdress = document.querySelector('#address');
+var mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
+var mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
+var roomsNumber = document.querySelector('#room_number');
+var capacityGuests = document.querySelector('#capacity');
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
@@ -206,8 +201,73 @@ var renderMapPins = function (arrayMocks) {
 //   mapPins.after(fragment);
 // };
 
-var offers = getMocks();
-map.classList.remove('map--faded');
+// Функция блокировки полей форм
+var blockField = function () {
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].disabled = true;
+  }
+  for (var j = 0; j < selects.length; j++) {
+    selects[j].disabled = true;
+  }
+};
 
-renderMapPins(offers);
+// Функции активации формы и карты
+var activePage = function () {
+  var adForm = document.querySelector('.ad-form');
+  if (map.classList.contains('map--faded')) {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+
+    for (var i = 0; i < fieldsets.length; i++) {
+      fieldsets[i].disabled = false;
+    }
+    for (var j = 0; j < selects.length; j++) {
+      selects[j].disabled = false;
+    }
+
+    renderMapPins(offers);
+  }
+};
+
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    activePage();
+    mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
+    mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - MAIN_PIN_SIZE;
+    inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    activePage();
+    mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
+    mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - MAIN_PIN_SIZE;
+    inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+  }
+});
+
+// Функциия проверки синхронизации полей
+var synchronizeFields = function () {
+  if ((capacityGuests.value !== roomsNumber.value) && (capacityGuests.value !== '0' || roomsNumber.value !== '100')) {
+    capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
+  } else {
+    capacityGuests.setCustomValidity('');
+  }
+};
+
+roomsNumber.addEventListener('change', function () {
+  synchronizeFields();
+});
+
+capacityGuests.addEventListener('change', function () {
+  synchronizeFields();
+});
+
+var offers = getMocks();
+inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+inputAdress.setAttribute('readonly', 'readonly');
+
+blockField();
+synchronizeFields();
 // renderOffers(offers[0]);
