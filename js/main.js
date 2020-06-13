@@ -20,8 +20,8 @@ var mainPin = map.querySelector('.map__pin--main');
 var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
 var inputAdress = document.querySelector('#address');
-var mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
-var mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
+var mainPinSizeX = parseInt(mainPin.style.left, 10) - Math.floor(MAIN_PIN_SIZE / 2);
+var mainPinSizeY = parseInt(mainPin.style.top, 10) - Math.floor(MAIN_PIN_SIZE / 2);
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
 
@@ -202,72 +202,69 @@ var renderMapPins = function (arrayMocks) {
 // };
 
 // Функция блокировки полей форм
-var blockField = function () {
+var toggleFieldsAvailability = function (isLocked) {
   for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].disabled = true;
+    fieldsets[i].disabled = isLocked;
   }
   for (var j = 0; j < selects.length; j++) {
-    selects[j].disabled = true;
+    selects[j].disabled = isLocked;
   }
 };
 
 // Функции активации формы и карты
-var activePage = function () {
+var activatePage = function () {
   var adForm = document.querySelector('.ad-form');
   if (map.classList.contains('map--faded')) {
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
 
-    for (var i = 0; i < fieldsets.length; i++) {
-      fieldsets[i].disabled = false;
-    }
-    for (var j = 0; j < selects.length; j++) {
-      selects[j].disabled = false;
-    }
-
+    toggleFieldsAvailability(false);
     renderMapPins(offers);
+
+    mainPinSizeX = parseInt(mainPin.style.left, 10) + Math.floor(MAIN_PIN_SIZE / 2);
+    mainPinSizeY = parseInt(mainPin.style.top, 10) + MAIN_PIN_SIZE;
+    inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
   }
 };
 
 mainPin.addEventListener('mousedown', function (evt) {
   if (evt.button === 0) {
-    activePage();
-    mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
-    mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - MAIN_PIN_SIZE;
-    inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+    activatePage();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    activePage();
-    mainPinSizeX = +mainPin.style.left.substring(0, mainPin.style.left.length - 2) - Math.floor(MAIN_PIN_SIZE / 2);
-    mainPinSizeY = +mainPin.style.top.substring(0, mainPin.style.top.length - 2) - MAIN_PIN_SIZE;
-    inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+    activatePage();
   }
 });
 
 // Функциия проверки синхронизации полей
 var synchronizeFields = function () {
-  if ((capacityGuests.value !== roomsNumber.value) && (capacityGuests.value !== '0' || roomsNumber.value !== '100')) {
-    capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
-  } else {
+  var isNotSynchronizeFields = false;
+  switch (isNotSynchronizeFields) {
+    case (capacityGuests.value !== '0' || roomsNumber.value !== '100'):
+    case (capacityGuests.value !== '1' || roomsNumber.value !== '1'):
+    case ((capacityGuests.value !== '2' || roomsNumber.value !== '2') && (capacityGuests.value !== '1' || roomsNumber.value !== '2')):
+    case ((capacityGuests.value !== '3' || roomsNumber.value !== '3') && (capacityGuests.value !== '2' || roomsNumber.value !== '3') && (capacityGuests.value !== '1' || roomsNumber.value !== '3')):
+      isNotSynchronizeFields = true;
+  }
+
+  if (isNotSynchronizeFields) {
     capacityGuests.setCustomValidity('');
+  } else {
+    capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
   }
 };
 
-roomsNumber.addEventListener('change', function () {
-  synchronizeFields();
-});
+roomsNumber.addEventListener('change', synchronizeFields);
 
-capacityGuests.addEventListener('change', function () {
-  synchronizeFields();
-});
+capacityGuests.addEventListener('change', synchronizeFields);
 
 var offers = getMocks();
 inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
 inputAdress.setAttribute('readonly', 'readonly');
 
-blockField();
+toggleFieldsAvailability(true);
 synchronizeFields();
 // renderOffers(offers[0]);
