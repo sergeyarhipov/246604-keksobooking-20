@@ -24,6 +24,7 @@ var mainPinSizeX = parseInt(mainPin.style.left, 10) - Math.floor(MAIN_PIN_SIZE /
 var mainPinSizeY = parseInt(mainPin.style.top, 10) - Math.floor(MAIN_PIN_SIZE / 2);
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
+var typeHouse = document.querySelector('#type');
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
@@ -257,9 +258,27 @@ var synchronizeFields = function () {
   }
 };
 
-roomsNumber.addEventListener('change', synchronizeFields);
+// Функция изменения минимального значения поля «Цена за ночь»
+var changeMinPrice = function () {
+  var minPrice = document.querySelector('#price');
+  if (typeHouse.value === 'bungalo') {
+    minPrice.placeholder = 0;
+    minPrice.min = 0;
+  } else if (typeHouse.value === 'flat') {
+    minPrice.placeholder = 1000;
+    minPrice.min = 1000;
+  } else if (typeHouse.value === 'house') {
+    minPrice.placeholder = 5000;
+    minPrice.min = 5000;
+  } else if (typeHouse.value === 'palace') {
+    minPrice.placeholder = 10000;
+    minPrice.min = 10000;
+  }
+};
 
+roomsNumber.addEventListener('change', synchronizeFields);
 capacityGuests.addEventListener('change', synchronizeFields);
+typeHouse.addEventListener('change', changeMinPrice);
 
 var offers = getMocks();
 inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
