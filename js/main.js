@@ -25,8 +25,6 @@ var mainPinSizeY = parseInt(mainPin.style.top, 10) + Math.floor(MAIN_PIN_SIZE / 
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
 var typeHouse = document.querySelector('#type');
-var timeIn = document.querySelector('#timein');
-var timeOut = document.querySelector('#timeout');
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
