@@ -30,6 +30,8 @@ var guestRoomsMap = {
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
 var typeHouse = document.querySelector('#type');
+var timeIn = document.querySelector('#timein');
+var timeOut = document.querySelector('#timeout');
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
@@ -230,6 +232,9 @@ var activatePage = function () {
 
     roomsNumber.addEventListener('change', synchronizeFields);
     capacityGuests.addEventListener('change', synchronizeFields);
+    typeHouse.addEventListener('change', changeMinPrice);
+    timeIn.addEventListener('change', defineTimeIn);
+    timeOut.addEventListener('change', defineTimeOut);
   }
 };
 
@@ -272,12 +277,19 @@ var changeMinPrice = function () {
   }
 };
 
-typeHouse.addEventListener('change', changeMinPrice);
+// Функции определения времени въезда/выезда
+var defineTimeIn = function () {
+  timeOut.value = timeIn.value;
+};
+
+var defineTimeOut = function () {
+  timeIn.value = timeOut.value;
+};
 
 var offers = getMocks();
 inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
 inputAdress.setAttribute('readonly', 'readonly');
-
 toggleFieldsAvailability(true);
 synchronizeFields();
+changeMinPrice();
 // renderOffers(offers[0]);
