@@ -20,11 +20,13 @@ var mainPin = map.querySelector('.map__pin--main');
 var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
 var inputAdress = document.querySelector('#address');
-var mainPinSizeX = parseInt(mainPin.style.left, 10) - Math.floor(MAIN_PIN_SIZE / 2);
-var mainPinSizeY = parseInt(mainPin.style.top, 10) - Math.floor(MAIN_PIN_SIZE / 2);
+var mainPinSizeX = parseInt(mainPin.style.left, 10) + Math.floor(MAIN_PIN_SIZE / 2);
+var mainPinSizeY = parseInt(mainPin.style.top, 10) + Math.floor(MAIN_PIN_SIZE / 2);
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
 var typeHouse = document.querySelector('#type');
+var timeIn = document.querySelector('#timein');
+var timeOut = document.querySelector('#timeout');
 
 // Функция подбора случайного числа
 var getRandomNumber = function (number) {
