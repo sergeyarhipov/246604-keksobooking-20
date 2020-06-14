@@ -17,11 +17,16 @@ var OFFSET_Y = 70;
 var MAIN_PIN_SIZE = 65;
 
 var mainPin = map.querySelector('.map__pin--main');
-var fieldsets = document.querySelectorAll('fieldset');
-var selects = document.querySelectorAll('select');
+var fieldsetsAndSelects = document.querySelectorAll('fieldset, select');
 var inputAdress = document.querySelector('#address');
 var mainPinSizeX = parseInt(mainPin.style.left, 10) + Math.floor(MAIN_PIN_SIZE / 2);
 var mainPinSizeY = parseInt(mainPin.style.top, 10) + Math.floor(MAIN_PIN_SIZE / 2);
+var guestRoomsMap = {
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0']
+};
 var roomsNumber = document.querySelector('#room_number');
 var capacityGuests = document.querySelector('#capacity');
 var typeHouse = document.querySelector('#type');
@@ -204,11 +209,8 @@ var renderMapPins = function (arrayMocks) {
 
 // Функция блокировки полей форм
 var toggleFieldsAvailability = function (isLocked) {
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].disabled = isLocked;
-  }
-  for (var j = 0; j < selects.length; j++) {
-    selects[j].disabled = isLocked;
+  for (var i = 0; i < fieldsetsAndSelects.length; i++) {
+    fieldsetsAndSelects[i].disabled = isLocked;
   }
 };
 
@@ -225,6 +227,9 @@ var activatePage = function () {
     mainPinSizeX = parseInt(mainPin.style.left, 10) + Math.floor(MAIN_PIN_SIZE / 2);
     mainPinSizeY = parseInt(mainPin.style.top, 10) + MAIN_PIN_SIZE;
     inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+
+    roomsNumber.addEventListener('change', synchronizeFields);
+    capacityGuests.addEventListener('change', synchronizeFields);
   }
 };
 
@@ -242,19 +247,10 @@ mainPin.addEventListener('keydown', function (evt) {
 
 // Функциия проверки синхронизации полей
 var synchronizeFields = function () {
-  var isNotSynchronizeFields = false;
-  switch (isNotSynchronizeFields) {
-    case (capacityGuests.value !== '0' || roomsNumber.value !== '100'):
-    case (capacityGuests.value !== '1' || roomsNumber.value !== '1'):
-    case ((capacityGuests.value !== '2' || roomsNumber.value !== '2') && (capacityGuests.value !== '1' || roomsNumber.value !== '2')):
-    case ((capacityGuests.value !== '3' || roomsNumber.value !== '3') && (capacityGuests.value !== '2' || roomsNumber.value !== '3') && (capacityGuests.value !== '1' || roomsNumber.value !== '3')):
-      isNotSynchronizeFields = true;
-  }
-
-  if (isNotSynchronizeFields) {
-    capacityGuests.setCustomValidity('');
-  } else {
+  if (guestRoomsMap[roomsNumber.value].indexOf(capacityGuests.value) === -1) {
     capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
+  } else {
+    capacityGuests.setCustomValidity('');
   }
 };
 
@@ -276,8 +272,6 @@ var changeMinPrice = function () {
   }
 };
 
-roomsNumber.addEventListener('change', synchronizeFields);
-capacityGuests.addEventListener('change', synchronizeFields);
 typeHouse.addEventListener('change', changeMinPrice);
 
 var offers = getMocks();
