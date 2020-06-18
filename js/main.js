@@ -236,13 +236,13 @@ var activatePage = function () {
     mainPinSizeY = parseInt(mainPin.style.top, 10) + MAIN_PIN_SIZE;
     inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
 
-    roomsNumber.addEventListener('change', synchronizeFields);
-    capacityGuests.addEventListener('change', synchronizeFields);
+    roomsNumber.addEventListener('change', onSelectGuestsRoomsChange);
+    capacityGuests.addEventListener('change', onSelectGuestsRoomsChange);
     typeHouse.addEventListener('change', function () {
       changeMinPrice(typeHouse.value);
     });
-    timeIn.addEventListener('change', defineTime.bind(null, timeIn, timeOut));
-    timeOut.addEventListener('change', defineTime.bind(null, timeOut, timeIn));
+    timeIn.addEventListener('change', onSelectTimeChange.bind(null, timeIn, timeOut));
+    timeOut.addEventListener('change', onSelectTimeChange.bind(null, timeOut, timeIn));
   }
 };
 
@@ -259,7 +259,7 @@ mainPin.addEventListener('keydown', function (evt) {
 });
 
 // Функциия проверки синхронизации полей
-var synchronizeFields = function () {
+var onSelectGuestsRoomsChange = function () {
   if (guestRoomsMap[roomsNumber.value].indexOf(capacityGuests.value) === -1) {
     capacityGuests.setCustomValidity('Укажите допустимое количество гостей');
   } else {
@@ -275,6 +275,7 @@ var changeMinPrice = function (type) {
       minPrice.min = 0;
       minPrice.placeholder = minPrice.min;
       break;
+    default:
     case 'flat':
       minPrice.min = 1000;
       minPrice.placeholder = minPrice.min;
@@ -283,7 +284,6 @@ var changeMinPrice = function (type) {
       minPrice.min = 5000;
       minPrice.placeholder = minPrice.min;
       break;
-    default:
     case 'palace':
       minPrice.min = 10000;
       minPrice.placeholder = minPrice.min;
@@ -292,14 +292,14 @@ var changeMinPrice = function (type) {
 };
 
 // Функции определения времени въезда/выезда
-var defineTime = function (time1, time2) {
+var onSelectTimeChange = function (time1, time2) {
   time1.value = time2.value;
 };
-timeIn.addEventListener('change', defineTime.bind(null, timeOut, timeIn));
-timeOut.addEventListener('change', defineTime.bind(null, timeIn, timeOut));
+timeIn.addEventListener('change', onSelectTimeChange.bind(null, timeOut, timeIn));
+timeOut.addEventListener('change', onSelectTimeChange.bind(null, timeIn, timeOut));
 
 // Функция отображения карточки объявления при клике по метке на карте
-var showOffer = function (evt) {
+var onMapPinsClick = function (evt) {
   var targetMapPin = evt.target;
   console.log(targetMapPin);
   var isMapPinMain = targetMapPin.classList.contains('map__pin--main');
@@ -339,10 +339,10 @@ var showOffer = function (evt) {
 
 // Обработчики событий Popup
 // Обработчики открытия Popup
-mapPins.addEventListener('click', showOffer);
+mapPins.addEventListener('click', onMapPinsClick);
 mapPins.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    showOffer(evt);
+    onMapPinsClick(evt);
   }
 });
 
@@ -360,5 +360,5 @@ var offers = getMocks();
 inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
 inputAdress.setAttribute('readonly', 'readonly');
 toggleFieldsAvailability(true);
-synchronizeFields();
+onSelectGuestsRoomsChange();
 changeMinPrice(typeHouse);
