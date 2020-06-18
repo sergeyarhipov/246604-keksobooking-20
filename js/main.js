@@ -202,11 +202,17 @@ var renderOffer = function (ad) {
   return adNode;
 };
 
+// d
 var renderOffers = function (ad) {
   var fragment = document.createDocumentFragment();
 
   fragment.appendChild(renderOffer(ad));
   mapPins.after(fragment);
+  var popupClose = document.querySelector('.popup__close');
+  var mapCard = document.querySelector('.map__card');
+  popupClose.addEventListener('click', function () {
+    mapCard.parentNode.removeChild(mapCard);
+  });
 };
 
 // Функция блокировки полей форм
@@ -232,9 +238,11 @@ var activatePage = function () {
 
     roomsNumber.addEventListener('change', synchronizeFields);
     capacityGuests.addEventListener('change', synchronizeFields);
-    typeHouse.addEventListener('change', changeMinPrice);
-    timeIn.addEventListener('change', defineTimeIn);
-    timeOut.addEventListener('change', defineTimeOut);
+    typeHouse.addEventListener('change', function () {
+      changeMinPrice(typeHouse.value);
+    });
+    timeIn.addEventListener('change', defineTime.bind(null, timeIn, timeOut));
+    timeOut.addEventListener('change', defineTime.bind(null, timeOut, timeIn));
   }
 };
 
@@ -260,82 +268,73 @@ var synchronizeFields = function () {
 };
 
 // Функция изменения минимального значения поля «Цена за ночь»
-var changeMinPrice = function () {
+var changeMinPrice = function (type) {
   var minPrice = document.querySelector('#price');
-  if (typeHouse.value === 'bungalo') {
-    minPrice.placeholder = 0;
-    minPrice.min = 0;
-  } else if (typeHouse.value === 'flat') {
-    minPrice.placeholder = 1000;
-    minPrice.min = 1000;
-  } else if (typeHouse.value === 'house') {
-    minPrice.placeholder = 5000;
-    minPrice.min = 5000;
-  } else if (typeHouse.value === 'palace') {
-    minPrice.placeholder = 10000;
-    minPrice.min = 10000;
+  switch (type) {
+    case 'bungalo':
+      minPrice.min = 0;
+      minPrice.placeholder = minPrice.min;
+      break;
+    case 'flat':
+      minPrice.min = 1000;
+      minPrice.placeholder = minPrice.min;
+      break;
+    case 'house':
+      minPrice.min = 5000;
+      minPrice.placeholder = minPrice.min;
+      break;
+    default:
+    case 'palace':
+      minPrice.min = 10000;
+      minPrice.placeholder = minPrice.min;
   }
+  return minPrice.min;
 };
 
 // Функции определения времени въезда/выезда
-var defineTimeIn = function () {
-  timeOut.value = timeIn.value;
+var defineTime = function (time1, time2) {
+  time1.value = time2.value;
 };
-
-var defineTimeOut = function () {
-  timeIn.value = timeOut.value;
-};
-
-var offers = getMocks();
-inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
-inputAdress.setAttribute('readonly', 'readonly');
-toggleFieldsAvailability(true);
-synchronizeFields();
-changeMinPrice();
+timeIn.addEventListener('change', defineTime.bind(null, timeOut, timeIn));
+timeOut.addEventListener('change', defineTime.bind(null, timeIn, timeOut));
 
 // Функция отображения карточки объявления при клике по метке на карте
 var showOffer = function (evt) {
-  var mapCard = document.querySelector('.map__card');
-  if (mapCard !== null) {
-    mapCard.parentNode.removeChild(mapCard);
-  }
-
-  var targetMapPins = evt.target;
-  var isMapPinMain = targetMapPins.classList.contains('map__pin--main');
-  var targetMapPinsSrc = targetMapPins.src;
-  if (!isMapPinMain) {
-    for (var i = 0; i < offers.length; i++) {
-      window.close = document.querySelector('.popup__close');
-      var avatarSrc = 'img/avatars/user' + '0' + (i + 1);
-      if (targetMapPins.hasAttribute('alt') && targetMapPinsSrc.includes(avatarSrc)) {
-        renderOffers(offers[i]);
-      }
-
-      if (targetMapPins.hasAttribute('type')) {
-        var targetImg = targetMapPins.querySelector('img');
-        targetMapPinsSrc = targetImg.src;
-        if (targetMapPinsSrc.includes(avatarSrc)) {
-          renderOffers(offers[i]);
-        }
-      }
+  var targetMapPin = evt.target;
+  console.log(targetMapPin);
+  var isMapPinMain = targetMapPin.classList.contains('map__pin--main');
+  var isMapPinMainImg = document.querySelector('.map__pin--main img');
+  var ismapOverlay = targetMapPin.classList.contains('map__overlay');
+  var ismapTitle = targetMapPin.classList.contains('map__title');
+  var parent = targetMapPin.parentElement;
+  console.log(!isMapPinMain && !isMapPinMainImg && !ismapOverlay && !ismapTitle);
+  console.log(!isMapPinMain || !isMapPinMainImg || !ismapOverlay || !ismapTitle);
+  console.log((!isMapPinMain && !isMapPinMainImg) || (targetMapPin.classList.contains('map__pin') || (parent.contains(targetMapPin))));
+  if (((targetMapPin !== isMapPinMainImg) && targetMapPin.classList.contains('map__pin')) || (parent.contains(targetMapPin)) && !ismapOverlay) {
+    // console.log(((targetMapPin !== isMapPinMainImg) && targetMapPin.classList.contains('map__pin')));
+    var mapCard = document.querySelector('.map__card');
+    if (mapCard !== null) {
+      mapCard.parentNode.removeChild(mapCard);
     }
-  }
-};
 
-// Функции удаления карточки объявления из разметки при клике по кнопке "Закрыть"
-var closeOfferClick = function (evt) {
-  var targetClosePopup = evt.target;
-  var mapCard = document.querySelector('.map__card');
-  var isPopupClose = targetClosePopup.classList.contains('popup__close');
-  if (isPopupClose) {
-    mapCard.parentNode.removeChild(mapCard);
-  }
-};
+    if (targetMapPin.hasAttribute('alt')) {
+      var avatarSrc = targetMapPin.src;
+    }
+    if (targetMapPin.hasAttribute('type')) {
+      var avatarImg = targetMapPin.querySelector('img');
+      avatarSrc = avatarImg.src;
+    }
 
-// Функции удаления карточки объявления из разметки при нажатии на кнопку "Escape"
-var closeOfferEsc = function () {
-  var mapCard = document.querySelector('.map__card');
-  mapCard.parentNode.removeChild(mapCard);
+    var isTargetOffer = function (elementAvatarSrc) {
+      if (avatarSrc.includes(elementAvatarSrc.author.avatar)) {
+        var offerElement = elementAvatarSrc;
+      }
+      return offerElement;
+    };
+
+    var renderOfferElement = offers.find(isTargetOffer);
+  }
+  renderOffers(renderOfferElement);
 };
 
 // Обработчики событий Popup
@@ -343,17 +342,23 @@ var closeOfferEsc = function () {
 mapPins.addEventListener('click', showOffer);
 mapPins.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
-    showOffer();
+    showOffer(evt);
   }
 });
 
 // Обработчики закрытия Popup
-map.addEventListener('click', closeOfferClick);
 document.addEventListener('keydown', function (evt) {
   var mapCard = document.querySelector('.map__card');
   if (evt.key === 'Escape') {
     if (mapCard !== null) {
-      closeOfferEsc();
+      mapCard.parentNode.removeChild(mapCard);
     }
   }
 });
+
+var offers = getMocks();
+inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
+inputAdress.setAttribute('readonly', 'readonly');
+toggleFieldsAvailability(true);
+synchronizeFields();
+changeMinPrice(typeHouse);
