@@ -275,7 +275,6 @@ var changeMinPrice = function (type) {
       minPrice.min = 0;
       minPrice.placeholder = minPrice.min;
       break;
-    default:
     case 'flat':
       minPrice.min = 1000;
       minPrice.placeholder = minPrice.min;
