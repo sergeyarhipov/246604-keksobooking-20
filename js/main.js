@@ -301,7 +301,6 @@ timeOut.addEventListener('change', onSelectTimeChange.bind(null, timeIn, timeOut
 // Функция отображения карточки объявления при клике по метке на карте
 var onMapPinsClick = function (evt) {
   var targetMapPin = evt.target;
-  console.log(targetMapPin);
   var closestMapPin = targetMapPin.closest('.map__pin');
   if (!!closestMapPin && !closestMapPin.classList.contains('map__pin--main')) {
     var mapCard = document.querySelector('.map__card');
