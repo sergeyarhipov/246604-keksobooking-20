@@ -302,16 +302,8 @@ timeOut.addEventListener('change', onSelectTimeChange.bind(null, timeIn, timeOut
 var onMapPinsClick = function (evt) {
   var targetMapPin = evt.target;
   console.log(targetMapPin);
-  var isMapPinMain = targetMapPin.classList.contains('map__pin--main');
-  var isMapPinMainImg = document.querySelector('.map__pin--main img');
-  var ismapOverlay = targetMapPin.classList.contains('map__overlay');
-  var ismapTitle = targetMapPin.classList.contains('map__title');
-  var parent = targetMapPin.parentElement;
-  console.log(!isMapPinMain && !isMapPinMainImg && !ismapOverlay && !ismapTitle);
-  console.log(!isMapPinMain || !isMapPinMainImg || !ismapOverlay || !ismapTitle);
-  console.log((!isMapPinMain && !isMapPinMainImg) || (targetMapPin.classList.contains('map__pin') || (parent.contains(targetMapPin))));
-  if (((targetMapPin !== isMapPinMainImg) && targetMapPin.classList.contains('map__pin')) || (parent.contains(targetMapPin)) && !ismapOverlay) {
-    // console.log(((targetMapPin !== isMapPinMainImg) && targetMapPin.classList.contains('map__pin')));
+  var closestMapPin = targetMapPin.closest('.map__pin');
+  if (!!closestMapPin && !closestMapPin.classList.contains('map__pin--main')) {
     var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
       mapCard.parentNode.removeChild(mapCard);
@@ -333,8 +325,8 @@ var onMapPinsClick = function (evt) {
     };
 
     var renderOfferElement = offers.find(isTargetOffer);
+    renderOffers(renderOfferElement);
   }
-  renderOffers(renderOfferElement);
 };
 
 // Обработчики событий Popup
