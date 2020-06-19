@@ -351,3 +351,4 @@ inputAdress.value = mainPinSizeX + ',' + mainPinSizeY;
 inputAdress.setAttribute('readonly', 'readonly');
 toggleFieldsAvailability(true);
 onSelectGuestsRoomsChange();
+changeMinPrice(typeHouse);
