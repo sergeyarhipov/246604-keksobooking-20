@@ -307,23 +307,14 @@ var onMapPinsClick = function (evt) {
       mapCard.parentNode.removeChild(mapCard);
     }
 
-    if (targetMapPin.hasAttribute('alt')) {
-      var avatarSrc = targetMapPin.src;
-    }
-    if (targetMapPin.hasAttribute('type')) {
-      var avatarImg = targetMapPin.querySelector('img');
-      avatarSrc = avatarImg.src;
-    }
+    var avatarSrc = closestMapPin.querySelector('img').src;
 
-    var isTargetOffer = function (elementAvatarSrc) {
-      if (avatarSrc.includes(elementAvatarSrc.author.avatar)) {
-        var offerElement = elementAvatarSrc;
-      }
-      return offerElement;
+    var isTargetOffer = function (offer) {
+      return avatarSrc.includes(offer.author.avatar);
     };
 
-    var renderOfferElement = offers.find(isTargetOffer);
-    renderOffers(renderOfferElement);
+    var targetElement = offers.find(isTargetOffer);
+    renderOffers(targetElement);
   }
 };
 
