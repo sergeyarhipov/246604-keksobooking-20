@@ -73,6 +73,6 @@
   typeHouse.addEventListener('change', function () {
     changeMinPrice(typeHouse.value);
   });
-  window.form.timeIn.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeIn, window.form.timeOut));
-  window.form.timeOut.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeOut, window.form.timeIn));
+  timeIn.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeIn, window.form.timeOut));
+  timeOut.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeOut, window.form.timeIn));
 })();
