@@ -75,4 +75,7 @@
   });
   timeIn.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeIn, window.form.timeOut));
   timeOut.addEventListener('change', onSelectTimeChange.bind(null, window.form.timeOut, window.form.timeIn));
+
+  changeMinPrice(typeHouse.value);
 })();
+
